@@ -43,5 +43,37 @@ const getSingleTask = async (req,res) =>{
     }
 }
 
-module.exports = {createTask , getTasks ,getSingleTask};
+const updateTask = async (req,res) =>{
+
+    const {id} =  req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({message : 'task Not found'})
+    }
+    try{
+        const task = await taskModel.findByIdAndUpdate({
+            _id : id}
+        ,{
+            ...req.body
+        })
+        res.status(200).json(task);
+    }catch(e){
+        res.status(400).json({error:e.message})
+    }
+}
+
+const deleteTask = async (req,res) =>{
+
+    const {id} =  req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({message : 'task Not found'})
+    }
+    try{
+        const deltask = await taskModel.findByIdAndDelete(id);
+        res.status(200).json(deltask);
+    }
+    catch(e){
+        res.status(400).json({error: e.message});
+    }
+}
+module.exports = {createTask , getTasks ,getSingleTask, updateTask ,deleteTask};
 
